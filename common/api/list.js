@@ -40,3 +40,10 @@ export const get_detail = (data) => {
 		data
 	})
 }
+
+export const update_comment = (data) => {
+	return $http({
+		url: "update_comment",
+		data
+	})
+}

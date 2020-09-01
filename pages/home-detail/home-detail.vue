@@ -20,7 +20,16 @@
 		</view>
 		<view class="detail-content">
 			<view class="detail-html">
-				<u-parse :content="formData.content" :noData="noData"></u-parse>
+				<!-- <u-parse :content="formData.content" :noData="noData"></u-parse> -->
+				内容
+			</view>
+			<view class="detail-comment">
+				<view class="comment-title">
+					最新评论
+				</view>
+				<view class="comment-content">
+					
+				</view>
 			</view>
 		</view>
 		<view class="detail-bottom">
@@ -44,7 +53,7 @@
 			<view class="popup-wrap">
 				<view class="popup-header">
 					<text class="popup-header__item" @click="close">取消 </text>
-					<text  class="popup-header__item" @click="sumbit">发布 </text>
+					<text class="popup-header__item" @click="sumbit">发布 </text>
 				</view>
 				<view class="popup-content">
 					<textarea class="popup-textarea" v-model="commentsValue" maxlength="200" fixed placeholder="请输入评论内容" />
@@ -87,7 +96,29 @@
 			// 发布
 			sumbit(){
 				console.log('发布');
-				this.$refs.popup.close()
+				if(!this.commentsValue){
+					uni.showToast({
+						title:'请输入评论内容',
+						icon:'none'
+					})
+					return
+				}
+				this.setUpdateComment(this.commentsValue)
+				
+			},
+			setUpdateComment(content){
+				uni.showLoading()
+				this.$api.update_comment({
+					article_id:this.formData._id,
+					content
+				}).then(res=>{
+					console.log(res);
+					uni.hideLoading()
+					uni.showToast({
+						title:'评论发布成功'
+					})
+					this.$refs.popup.close()
+				})
 			},
 			// 获取详情信息
 			getDetail() {
@@ -163,6 +194,19 @@
 		min-height: 500px;
 		.detail-html {
 			padding:0 15px;
+		}
+		.detail-comment{
+			margin-top: 30px;
+			.comment-title{
+				padding: 10px 15px;
+				border-bottom: 1px solid #F5F5F5;
+				font-size: 14px;
+				color: #666;
+			}
+			.comment-content{
+				border-top: 1px solid #eee;
+				padding: 0 15px;
+			}
 		}
 	}
 
