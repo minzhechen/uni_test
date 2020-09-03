@@ -4,25 +4,31 @@
 		<view class="comments-header">
 			<!-- logo -->
 			<view class="comments-header_logo">
-				<image src="../../static/logo.png" mode="aspectFill"></image>
+				<image :src="comments.author.avatar" mode="aspectFill"></image>
 			</view>
 			<!-- 头部右侧 -->
 			<view class="comments-header_info">
 				<view class="title">
-					god
+					{{comments.author.author_name}}
 				</view>
-				<view>2020-09-02 11:11:11</view>
+				<view>{{new Date(comments.create_time).toLocaleString()}}</view>
 			</view>
 		</view>
 
 		<view class="comments-content">
-			是个好东西
+			{{comments.comment_content}}
 		</view>
 	</view>
 </template>
 
 <script>
 	export default {
+		props:{
+			comments:{
+				type:Object,
+				default:()=>{}
+			}
+		},
 		data() {
 			return {
 

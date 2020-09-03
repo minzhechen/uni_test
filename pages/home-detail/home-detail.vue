@@ -27,13 +27,15 @@
 				<view class="comment-title">
 					最新评论
 				</view>
-				
+
 				<!-- 评论列表渲染 -->
-				<view class="comment-content" v-for="(v,i) in 5" :key="i">
-					<comments-box></comments-box>
+				<view class="comment-content" v-for="(v,i) in commentsList" :key="v.author.comment_id">
+					<comments-box :comments="v"></comments-box>
 				</view>
 			</view>
 		</view>
+		
+		<!-- 底部评价栏 -->
 		<view class="detail-bottom">
 			<view class="detail-bottom__input" @click="openComment">
 				<text>谈谈你的看法</text>
@@ -77,12 +79,17 @@
 				formData: {},
 				noData:'<p style="text-align:center;color:#666">详情加载中...</p>',
 				// 输入框的值
-				commentsValue:''
+				commentsValue:'',
+				// 评论内容列表
+				commentsList:[]
 			}
 		},
 		onLoad(query) {
 			this.formData = JSON.parse(query.params)
+			// 获取文章内容
 			this.getDetail()
+			// 获取评论内容列表
+			this.getComments()
 		},
 		onReady() {
 		},
@@ -95,7 +102,18 @@
 			close(){
 				this.$refs.popup.close()
 			},
-			// 发布
+			
+			// 获取评论内容
+			getComments(){
+				this.$api.get_comments({
+					article_id:this.formData._id
+				}).then(res=>{
+					console.log(res);
+					this.commentsList = res.data
+				})
+			},
+			
+			// 点击发布按钮
 			sumbit(){
 				console.log('发布');
 				if(!this.commentsValue){
@@ -106,8 +124,9 @@
 					return
 				}
 				this.setUpdateComment(this.commentsValue)
-				
 			},
+			
+			// 发布评论
 			setUpdateComment(content){
 				uni.showLoading()
 				this.$api.update_comment({
@@ -122,6 +141,7 @@
 					this.$refs.popup.close()
 				})
 			},
+			
 			// 获取详情信息
 			getDetail() {
 				this.$api.get_detail({
