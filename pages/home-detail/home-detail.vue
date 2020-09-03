@@ -27,8 +27,10 @@
 				<view class="comment-title">
 					最新评论
 				</view>
-				<view class="comment-content">
-					
+				
+				<!-- 评论列表渲染 -->
+				<view class="comment-content" v-for="(v,i) in 5" :key="i">
+					<comments-box></comments-box>
 				</view>
 			</view>
 		</view>

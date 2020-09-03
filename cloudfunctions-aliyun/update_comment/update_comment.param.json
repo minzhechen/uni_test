@@ -1,6 +1,6 @@
 // 本文件中的json内容将在云函数【上传并运行】时作为参数传给云函数。
 {
-	"user_id":"5e76254858d922004d6c9cdc",
-	"article_id":"5e762546159530004c5e7be8",
+	"user_id":"5eb228f571aa80004d79c6fb",
+	"article_id":"5eb228f26bba66004c6ab3b3",
 	"content":"评论成功"
 }
