@@ -17,22 +17,37 @@
 
 		<view class="comments-content">
 			{{comments.comment_content}}
+			<view class="comments-info">
+				<view class="comments-button" @click="reply(comments)">
+					回复
+				</view>
+			</view>
+			<view class="comments-relpy" v-for="(item,index) in comments.replys" :key="index">
+				<comments-box :comments="item"></comments-box>
+			</view>
 		</view>
 	</view>
 </template>
 
 <script>
+	import commentsBox from '@/components/comments-box/comments-box.vue'
 	export default {
-		props:{
-			comments:{
-				type:Object,
-				default:()=>{}
+		components:{commentsBox},
+		props: {
+			comments: {
+				type: Object,
+				default: () => {}
 			}
 		},
 		data() {
 			return {
 
 			};
+		},
+		methods:{
+			reply(comment){
+				this.$emit('reply',comment)
+			}
 		}
 	}
 </script>
@@ -80,6 +95,24 @@
 			margin-top: 10px;
 			font-size: 14px;
 			color: #000;
+
+			.comments-info {
+				margin-top: 10px;
+				display: flex;
+
+				.comments-button {
+					padding: 2px 10px;
+					color: #999;
+					border: 1px solid #ccc;
+					border-radius: 20px;
+				}
+			}
+
+			.comments-relpy {
+				margin: 10px 0;
+				padding: 0 10px;
+				border: 1px solid #ccc;
+			}
 		}
 	}
 </style>

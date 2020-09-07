@@ -30,7 +30,7 @@
 
 				<!-- 评论列表渲染 -->
 				<view class="comment-content" v-for="(v,i) in commentsList" :key="v.author.comment_id">
-					<comments-box :comments="v"></comments-box>
+					<comments-box :comments="v" @reply="reply"></comments-box>
 				</view>
 			</view>
 		</view>
@@ -101,6 +101,11 @@
 			// 关闭弹窗
 			close(){
 				this.$refs.popup.close()
+			},
+			
+			// 回复按钮事件
+			reply(comment){
+				console.log(comment);
 			},
 			
 			// 获取评论内容
