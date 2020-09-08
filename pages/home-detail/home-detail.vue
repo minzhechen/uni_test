@@ -34,7 +34,7 @@
 				</view>
 			</view>
 		</view>
-		
+
 		<!-- 底部评价栏 -->
 		<view class="detail-bottom">
 			<view class="detail-bottom__input" @click="openComment">
@@ -81,7 +81,9 @@
 				// 输入框的值
 				commentsValue:'',
 				// 评论内容列表
-				commentsList:[]
+				commentsList:[],
+				// 被回复的评论的信息
+				replyFormData:{}
 			}
 		},
 		onLoad(query) {
@@ -106,17 +108,14 @@
 			// 回复按钮事件
 			reply(comment){
 				console.log(comment);
+				this.replyFormData = {
+					'comment_id':comment.comment_id
+				}
+				// 打开评论发布窗口
+				this.openComment()
 			},
 			
-			// 获取评论内容
-			getComments(){
-				this.$api.get_comments({
-					article_id:this.formData._id
-				}).then(res=>{
-					console.log(res);
-					this.commentsList = res.data
-				})
-			},
+			
 			
 			// 点击发布按钮
 			sumbit(){
@@ -128,22 +127,39 @@
 					})
 					return
 				}
-				this.setUpdateComment(this.commentsValue)
+				// 发布评论
+				this.setUpdateComment({content:this.commentsValue,...this.replyFormData})
 			},
 			
 			// 发布评论
 			setUpdateComment(content){
 				uni.showLoading()
-				this.$api.update_comment({
+				const formData = {
 					article_id:this.formData._id,
-					content
-				}).then(res=>{
+					...content
+				}
+				console.log(formData);
+				this.$api.update_comment(formData).then(res=>{
 					console.log(res);
 					uni.hideLoading()
 					uni.showToast({
 						title:'评论发布成功'
 					})
-					this.$refs.popup.close()
+					// 获取评论内容
+					this.getComments()
+					this.close()
+					// 清空被回复的评论的信息
+					this.replyFormData={}
+				})
+			},
+			
+			// 获取评论内容
+			getComments(){
+				this.$api.get_comments({
+					article_id:this.formData._id
+				}).then(res=>{
+					console.log(res);
+					this.commentsList = res.data
 				})
 			},
 			
