@@ -8,8 +8,13 @@
 			</view>
 			<!-- 头部右侧 -->
 			<view class="comments-header_info">
-				<view class="title">
+				<view v-if="!comments.is_reply" class="title">
 					{{comments.author.author_name}}
+				</view>
+				<view v-else class="title">
+					{{comments.author.author_name}}
+					<text class="reply-txt">回复</text>
+					{{comments.to}}
 				</view>
 				<view>{{new Date(comments.create_time).toLocaleString()}}</view>
 			</view>
@@ -18,12 +23,12 @@
 		<view class="comments-content">
 			{{comments.comment_content}}
 			<view class="comments-info">
-				<view class="comments-button" @click="reply(comments)">
+				<view class="comments-button" @click="reply({comments,is_reply})">
 					回复
 				</view>
 			</view>
 			<view class="comments-relpy" v-for="(item,index) in comments.replys" :key="index">
-				<comments-box :comments="item"></comments-box>
+				<comments-box :comments="item" :is_reply="true" @reply="reply"></comments-box>
 			</view>
 		</view>
 	</view>
@@ -32,12 +37,19 @@
 <script>
 	import commentsBox from '@/components/comments-box/comments-box.vue'
 	export default {
-		name:'comments-box',
-		components:{commentsBox},
+		name: 'comments-box',
+		components: {
+			commentsBox
+		},
 		props: {
 			comments: {
 				type: Object,
 				default: () => {}
+			},
+			// 是否是子回复
+			is_reply: {
+				type: Boolean,
+				default: false
 			}
 		},
 		data() {
@@ -45,9 +57,18 @@
 
 			};
 		},
-		methods:{
-			reply(comment){
-				this.$emit('reply',comment)
+		methods: {
+			reply(comment) {
+				// 子回复
+				if (comment.is_reply) {
+					// 因为传递的是对象comment，comment.is_reply为true,于是调用了两次，最下层赋值了两个子回复id，上一层重复赋值了一个子回复id以及赋值了一个父回复id。
+					// 子评论id
+					comment.comments.reply_id = comment.comments.comment_id
+					// 主评论id
+					comment.comments.comment_id = this.comments.comment_id
+				}
+				// 传递给父组件
+				this.$emit('reply', comment)
 			}
 		}
 	}
@@ -87,6 +108,12 @@
 					color: #333;
 					font-size: 14px;
 					margin-bottom: 10px;
+
+					.reply-txt {
+						font-weight: bold;
+						margin: 0 10px;
+						color: #000;
+					}
 				}
 			}
 		}
@@ -112,7 +139,7 @@
 			.comments-relpy {
 				margin: 10px 0;
 				padding: 0 10px;
-				border: 1px solid #ccc;
+				border: 1px solid #eee;
 			}
 		}
 	}

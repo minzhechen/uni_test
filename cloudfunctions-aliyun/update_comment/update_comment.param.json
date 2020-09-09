@@ -1,7 +1,9 @@
 // 本文件中的json内容将在云函数【上传并运行】时作为参数传给云函数。
 {
-	"user_id":"5eb228f571aa80004d79c6fb",
-	"article_id":"5eb228f26bba66004c6ab3b4",
-	"content":"我也回复了",
-	"comment_id":"729bt58gcqc0"
+	"user_id":"5eb228f571aa80004d79c6fc",
+	"article_id":"5eb228f26bba66004c6ab3b3",
+	"content":"你说的对",
+	"comment_id":"6fdrwjoh54w0",
+	"is_reply":true,
+	"reply_id":"2wrz3dd6ffi0"
 }

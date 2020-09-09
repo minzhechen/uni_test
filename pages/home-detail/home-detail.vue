@@ -106,10 +106,14 @@
 			},
 			
 			// 回复按钮事件
-			reply(comment){
-				console.log(comment);
+			reply(e){
+				console.log(e);
 				this.replyFormData = {
-					'comment_id':comment.comment_id
+					'comment_id':e.comments.comment_id,
+					'is_reply':e.is_reply
+				}
+				if(e.comments.reply_id){
+					this.replyFormData.reply_id = e.comments.reply_id
 				}
 				// 打开评论发布窗口
 				this.openComment()
@@ -139,6 +143,7 @@
 					...content
 				}
 				console.log(formData);
+				return
 				this.$api.update_comment(formData).then(res=>{
 					console.log(res);
 					uni.hideLoading()

@@ -10,6 +10,8 @@ exports.main = async (event, context) => {
 		article_id, // 文章id
 		content, // 评论内容
 		comment_id = '', // 被回复的评论的id
+		reply_id = '', // 被回复的子评论的id
+		is_reply // 是否回复的子评论
 	} = event
 
 	let user = await db.collection('user').doc(user_id).get()
@@ -25,6 +27,7 @@ exports.main = async (event, context) => {
 		comment_id: genID(5), // 评论id
 		comment_content: content, // 评论内容
 		create_time: new Date().getTime(), // 创建时间
+		is_reply,
 		author: {
 			author_id: user._id, // 作者id
 			author_name: user.author_name, // 作者名称
@@ -37,13 +40,23 @@ exports.main = async (event, context) => {
 	if (comment_id === '') { // 评论
 		commentObj = dbCmd.unshift(commentObj)
 	} else { // 回复
-		// 要回复的评论的作者
-		let author_name = comments.find(v => v.comment_id === comment_id)
+		let author_name
 
 		// 要回复的评论所在索引
 		let commentIndex = comments.findIndex(v => v.comment_id === comment_id)
-		
-		
+
+		if (reply_id === '') { // 主回复
+
+			// 要回复的评论的作者
+			author_name = comments.find(v => v.comment_id === comment_id)
+
+		} else { // 子回复
+
+			author_name = comments[commentIndex].replys.find(v => v.comment_id === reply_id)
+
+		}
+
+		// 要回复的评论的作者
 		author_name = author_name.author.author_name
 
 		// 赋值回复信息
