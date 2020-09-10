@@ -51,7 +51,7 @@
 				<view class="detail-bottom__icons-box" @click="likeTap(formData._id)">
 					<uni-icons :type="formData.is_like?'heart-filled':'heart'" size="22" color="#F07373"></uni-icons>
 				</view>
-				<view class="detail-bottom__icons-box">
+				<view class="detail-bottom__icons-box" @click="thumbsup">
 					<uni-icons type="hand-thumbsup" size="22" color="#F07373"></uni-icons>
 				</view>
 			</view>
@@ -151,6 +151,16 @@
 						icon:'none'
 					})
 				})
+			},
+			
+			// 点赞文章
+			thumbsup(){
+				
+			},
+			
+			// 更新点赞文章
+			setUpdateThumbs(){
+				
 			},
 			
 			// 回复按钮事件
