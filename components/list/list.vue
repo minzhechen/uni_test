@@ -14,6 +14,7 @@
 			listItem
 		},
 		props: {
+			// tab标签列表
 			tab: {
 				type: Array,
 				default () {
@@ -28,11 +29,15 @@
 		data() {
 			return {
 				list: [],
-				// js 的限制 listCatchData[index] = data
+				// 各tab的文章数据
 				listCatchData: {},
+				// 各tab的页数和状态
 				load: {},
 				pageSize: 10
 			};
+		},
+		onLoad() {
+		
 		},
 		watch: {
 			tab(newVal) {
@@ -46,13 +51,20 @@
 		created() {
 			// TODO tab 还没有赋值
 			// this.getList(0)
+			uni.$on('update_article', res => {
+				this.listCatchData = {}
+				this.load = {}
+				this.getList(this.activeIndex)
+			})
 		},
 		methods: {
+			// 加载更多
 			loadmore() {
 				if (this.load[this.activeIndex].loading === 'noMore') return
 				this.load[this.activeIndex].page++
 				this.getList(this.activeIndex)
 			},
+
 			change(e) {
 				const {
 					current
@@ -64,14 +76,17 @@
 				}
 
 			},
+			
+			// 获取当前tab的文章列表
 			getList(current) {
+				// 初始化各tab的页数和状态
 				if (!this.load[current]) {
 					this.load[current] = {
 						page: 1,
 						loading: 'loading'
 					}
 				}
-				console.log('当前的页数',this.load[current].page);
+				console.log('当前的页数', this.load[current].page);
 				this.$api.get_list({
 					name: this.tab[current].name,
 					page: this.load[current].page,
@@ -81,6 +96,7 @@
 					const {
 						data
 					} = res
+					// 如果没有数据了，修改状态之后不再请求
 					if (data.length === 0) {
 						let oldLoad = {}
 						oldLoad.loading = 'noMore'

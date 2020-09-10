@@ -33,10 +33,11 @@
 				this.setUpdateLikes()
 				console.log('收藏成功');
 			},
+			
+			// 收藏文章
 			setUpdateLikes() {
 				uni.showLoading()
 				this.$api.update_like({
-					user_id: '5e76254858d922004d6c9cdc',
 					article_id: this.item._id
 				}).then(res => {
 					uni.hideLoading()

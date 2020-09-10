@@ -17,6 +17,9 @@
 					<text>{{formData.thumbs_up_count}} 赞</text>
 				</view>
 			</view>
+			<view class="detail-header_button" @click="follow(formData.author.id)">
+				{{formData.is_author_like?'取消关注':'关注'}}
+			</view>
 		</view>
 		<view class="detail-content">
 			<view class="detail-html">
@@ -45,8 +48,8 @@
 				<view class="detail-bottom__icons-box">
 					<uni-icons type="chat" size="22" color="#F07373"></uni-icons>
 				</view>
-				<view class="detail-bottom__icons-box">
-					<uni-icons type="heart" size="22" color="#F07373"></uni-icons>
+				<view class="detail-bottom__icons-box" @click="likeTap(formData._id)">
+					<uni-icons :type="formData.is_like?'heart-filled':'heart'" size="22" color="#F07373"></uni-icons>
 				</view>
 				<view class="detail-bottom__icons-box">
 					<uni-icons type="hand-thumbsup" size="22" color="#F07373"></uni-icons>
@@ -105,6 +108,51 @@
 				this.$refs.popup.close()
 			},
 			
+			// 点击关注作者
+			follow(author_id){
+				console.log(author_id);
+				this.setUpdateAuthor(author_id)
+			},
+			
+			// 更新关注作者
+			setUpdateAuthor(author_id){
+				uni.showLoading()
+				this.$api.update_author({
+					author_id
+				}).then(res=>{
+					uni.hideLoading()
+					this.formData.is_author_like = !this.formData.is_author_like
+					uni.showToast({
+						title:this.formData.is_author_like?'关注作者成功':'取消关注作者',
+						icon:'none'
+					})
+					console.log(res);
+				})
+			},
+			
+			// 收藏文章
+			likeTap(article_id){
+				// 更新收藏文章
+				this.setUpdateLike(article_id)
+			},
+			
+			// 更新收藏文章
+			setUpdateLike(article_id){
+				uni.showLoading()
+				this.$api.update_like({
+					article_id
+				}).then(res=>{
+					console.log(res);
+					uni.hideLoading()
+					this.formData.is_like = !this.formData.is_like
+					uni.$emit('update_article')
+					uni.showToast({
+						title:this.formData.is_like?'收藏成功':'取消收藏',
+						icon:'none'
+					})
+				})
+			},
+			
 			// 回复按钮事件
 			reply(e){
 				console.log(e);
@@ -118,8 +166,6 @@
 				// 打开评论发布窗口
 				this.openComment()
 			},
-			
-			
 			
 			// 点击发布按钮
 			sumbit(){
@@ -142,8 +188,8 @@
 					article_id:this.formData._id,
 					...content
 				}
-				console.log(formData);
-				return
+				// console.log(formData);
+				// return
 				this.$api.update_comment(formData).then(res=>{
 					console.log(res);
 					uni.hideLoading()
@@ -153,6 +199,7 @@
 					// 获取评论内容
 					this.getComments()
 					this.close()
+					this.commentsValue = ''
 					// 清空被回复的评论的信息
 					this.replyFormData={}
 				})
@@ -234,6 +281,15 @@
 					margin-right: 10px;
 				}
 			}
+		}
+		
+		.detail-header_button{
+			flex-shrink: 0;
+			background-color: $mk-base-color;
+			color: #fff;
+			font-size: 12px;
+			padding: 5px 15px;
+			border-radius: 5px;
 		}
 	}
 

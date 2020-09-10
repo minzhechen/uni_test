@@ -27,9 +27,11 @@
 				this.activeIndex = 0
 				this.getLabel()
 			})
+			// 获取tab标签
 			this.getLabel()
 		},
 		methods: {
+			// 统一tab列和文章列的索引
 			change(current){
 				this.tabIndex = current
 				this.activeIndex = current
@@ -39,6 +41,7 @@
 				console.log(data,index);
 				this.activeIndex = index
 			},
+			// 获取tab标签
 			getLabel() {
 				// 调用云函数方法
 				this.$api.get_label().then((res) => {
