@@ -55,9 +55,18 @@ export const get_comments = (data) => {
 	})
 }
 
+// 更新作者收藏
 export const update_author = (data) => {
 	return $http({
 		url: "update_author",
+		data
+	})
+}
+
+// 更新文章点赞
+export const update_thumbsup = (data) => {
+	return $http({
+		url: "update_thumbsup",
 		data
 	})
 }

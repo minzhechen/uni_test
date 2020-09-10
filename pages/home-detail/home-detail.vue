@@ -51,8 +51,8 @@
 				<view class="detail-bottom__icons-box" @click="likeTap(formData._id)">
 					<uni-icons :type="formData.is_like?'heart-filled':'heart'" size="22" color="#F07373"></uni-icons>
 				</view>
-				<view class="detail-bottom__icons-box" @click="thumbsup">
-					<uni-icons type="hand-thumbsup" size="22" color="#F07373"></uni-icons>
+				<view class="detail-bottom__icons-box" @click="thumbsup(formData._id)">
+					<uni-icons :type="formData.is_thumbs_up?'hand-thumbsup':'hand-thumbsup-filled'" size="22" color="#F07373"></uni-icons>
 				</view>
 			</view>
 		</view>
@@ -154,13 +154,25 @@
 			},
 			
 			// 点赞文章
-			thumbsup(){
-				
+			thumbsup(article_id){
+				this.setUpdateThumbs(article_id)
 			},
 			
 			// 更新点赞文章
-			setUpdateThumbs(){
-				
+			setUpdateThumbs(article_id){
+				uni.showLoading()
+				this.$api.update_thumbsup({
+					article_id
+				}).then(res=>{
+					console.log(res);
+					uni.hideLoading()
+					this.formData.is_thumbs_up = !this.formData.is_thumbs_up
+					uni.$emit('update_article')
+					uni.showToast({
+						title:this.formData.is_thumbs_up?'点赞成功':'取消点赞',
+						icon:'none'
+					})
+				})
 			},
 			
 			// 回复按钮事件
