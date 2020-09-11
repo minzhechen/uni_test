@@ -46,13 +46,13 @@
 			</view>
 			<view class="detail-bottom__icons">
 				<view class="detail-bottom__icons-box">
-					<uni-icons type="chat" size="22" color="#F07373"></uni-icons>
+					<uni-icons type="chat" size="22" color="#F07373" @click="open"></uni-icons>
 				</view>
 				<view class="detail-bottom__icons-box" @click="likeTap(formData._id)">
 					<uni-icons :type="formData.is_like?'heart-filled':'heart'" size="22" color="#F07373"></uni-icons>
 				</view>
 				<view class="detail-bottom__icons-box" @click="thumbsup(formData._id)">
-					<uni-icons :type="formData.is_thumbs_up?'hand-thumbsup':'hand-thumbsup-filled'" size="22" color="#F07373"></uni-icons>
+					<uni-icons :type="formData.is_thumbs_up?'hand-thumbsup-filled':'hand-thumbsup'" size="22" color="#F07373"></uni-icons>
 				</view>
 			</view>
 		</view>
@@ -108,6 +108,15 @@
 				this.$refs.popup.close()
 			},
 			
+			// 跳转评论详情页
+			open(){
+				console.log(this.formData._id);
+				return 
+				uni.navigateTo({
+					url:'/pages/detail-comments/detail-comments?id='+this.formData._id
+				})
+			},
+			
 			// 点击关注作者
 			follow(author_id){
 				console.log(author_id);
@@ -160,6 +169,8 @@
 			
 			// 更新点赞文章
 			setUpdateThumbs(article_id){
+				console.log(article_id);
+				// return
 				uni.showLoading()
 				this.$api.update_thumbsup({
 					article_id
@@ -167,10 +178,15 @@
 					console.log(res);
 					uni.hideLoading()
 					this.formData.is_thumbs_up = !this.formData.is_thumbs_up
+					if(this.formData.is_thumbs_up){
+						this.formData.thumbs_up_count++
+					}else{
+						this.formData.thumbs_up_count--
+					}
 					uni.$emit('update_article')
 					uni.showToast({
 						title:this.formData.is_thumbs_up?'点赞成功':'取消点赞',
-						icon:'none'
+						icon:this.formData.is_thumbs_up?'success':'none'
 					})
 				})
 			},
