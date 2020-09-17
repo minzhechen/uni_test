@@ -7,10 +7,12 @@ exports.main = async (event, context) => {
 	const {
 		user_id,
 		article_id,
+		page = 1,
+		pageSize = 10
 	} = event
 
 	let res = await db.collection('article').aggregate()
-	// 匹配符合条件的数据
+		// 匹配符合条件的数据
 		.match({
 			_id: article_id
 		})
@@ -22,8 +24,10 @@ exports.main = async (event, context) => {
 		})
 		// 用 内部属性 comments 对象代替自身
 		.replaceRoot({
-			newRoot:'$comments'
+			newRoot: '$comments'
 		})
+		.skip((page - 1) * pageSize)
+		.limit(pageSize)
 		.end()
 
 	//返回数据给客户端

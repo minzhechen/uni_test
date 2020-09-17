@@ -45,8 +45,8 @@
 				<uni-icons type="compose" size="16" color="#F07373"></uni-icons>
 			</view>
 			<view class="detail-bottom__icons">
-				<view class="detail-bottom__icons-box">
-					<uni-icons type="chat" size="22" color="#F07373" @click="open"></uni-icons>
+				<view class="detail-bottom__icons-box"  @click="open">
+					<uni-icons type="chat" size="22" color="#F07373"></uni-icons>
 				</view>
 				<view class="detail-bottom__icons-box" @click="likeTap(formData._id)">
 					<uni-icons :type="formData.is_like?'heart-filled':'heart'" size="22" color="#F07373"></uni-icons>
@@ -56,7 +56,7 @@
 				</view>
 			</view>
 		</view>
-		<uni-popup ref="popup" type="bottom" :maskClick="false">
+		<!-- <uni-popup ref="popup" type="bottom" :maskClick="false">
 			<view class="popup-wrap">
 				<view class="popup-header">
 					<text class="popup-header__item" @click="close">取消 </text>
@@ -67,7 +67,8 @@
 					<view class="popup-count">{{commentsValue.length}}/200</view>
 				</view>
 			</view>
-		</uni-popup>
+		</uni-popup> -->
+		<comment-popup ref="popup" ></comment-popup>
 	</view>
 </template>
 
@@ -86,7 +87,11 @@
 				// 评论内容列表
 				commentsList:[],
 				// 被回复的评论的信息
-				replyFormData:{}
+				replyFormData:{},
+				// 页数
+				page: 1,
+				// 每页条数
+				pageSize: 5
 			}
 		},
 		onLoad(query) {
@@ -95,6 +100,7 @@
 			this.getDetail()
 			// 获取评论内容列表
 			this.getComments()
+			
 		},
 		onReady() {
 		},
@@ -110,8 +116,8 @@
 			
 			// 跳转评论详情页
 			open(){
-				console.log(this.formData._id);
-				return 
+				// console.log(this.formData._id);
+				// return 
 				uni.navigateTo({
 					url:'/pages/detail-comments/detail-comments?id='+this.formData._id
 				})
@@ -198,6 +204,7 @@
 					'comment_id':e.comments.comment_id,
 					'is_reply':e.is_reply
 				}
+				// 回复 评论的对象的id
 				if(e.comments.reply_id){
 					this.replyFormData.reply_id = e.comments.reply_id
 				}
@@ -246,7 +253,9 @@
 			// 获取评论内容
 			getComments(){
 				this.$api.get_comments({
-					article_id:this.formData._id
+					article_id:this.formData._id,
+					page: this.page,
+					pageSize: this.pageSize
 				}).then(res=>{
 					console.log(res);
 					this.commentsList = res.data
@@ -395,36 +404,6 @@
 			}
 		}
 	}
-	.popup-wrap {
-		background-color: #fff;
-		.popup-header {
-			display: flex;
-			justify-content: space-between;
-			font-size: 14px;
-			color: #666;
-			border-bottom: 1px #F5F5F5 solid;
-			.popup-header__item {
-				height: 50px;
-				line-height: 50px;
-				padding: 0 15px;
-			}
-		}
-		.popup-content {
-			width: 100%;
-			padding: 15px;
-			box-sizing: border-box;
-			.popup-textarea {
-				width: 100%;
-				height: 200px;
-				
-			}
-			.popup-count {
-				display: flex;
-				justify-content: flex-end;
-				font-size: 12px;
-				color: #999;
-			}
-		}
-	}
+	
 
 </style>
