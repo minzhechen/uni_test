@@ -1,134 +1,130 @@
 <template>
 	<swiper class="home-swiper" :current="activeIndex" @change="change">
 		<!-- 每个标签页 -->
-		<swiper-item v-for="(item ,index) in tab" :key="index" class="swiper-item">
+		<swiper-item v-for="(item, index) in tab" :key="index" class="swiper-item">
 			<!-- 每一页的渲染数据 -->
 			<list-item :list="listCatchData[index]" :load="load[index]" @loadmore="loadmore"></list-item>
 		</swiper-item>
-
 	</swiper>
 </template>
 
 <script>
-	import listItem from './list-item.vue'
-	export default {
-		components: {
-			listItem
-		},
-		props: {
-			// tab标签列表
-			tab: {
-				type: Array,
-				default () {
-					return []
-				}
-			},
-			activeIndex: {
-				type: Number,
-				default: 0
+import listItem from './list-item.vue';
+export default {
+	components: {
+		listItem
+	},
+	props: {
+		// tab标签列表
+		tab: {
+			type: Array,
+			default() {
+				return [];
 			}
 		},
-		data() {
-			return {
-				list: [],
-				// 各tab的文章数据
-				listCatchData: {},
-				// 各tab的页数和状态
-				load: {},
-				pageSize: 10
-			};
+		activeIndex: {
+			type: Number,
+			default: 0
+		}
+	},
+	data() {
+		return {
+			list: [],
+			// 各tab的文章数据
+			listCatchData: {},
+			// 各tab的页数和状态
+			load: {},
+			pageSize: 10
+		};
+	},
+	onLoad() {},
+	watch: {
+		tab(newVal) {
+			if (newVal.length === 0) return;
+			this.listCatchData = {};
+			this.load = {};
+			this.getList(this.activeIndex);
+		}
+	},
+	// onLoad 在页面 ，created 组件
+	created() {
+		// TODO tab 还没有赋值
+		// this.getList(0)
+		uni.$on('update_article', res => {
+			if (res === 'follow') {
+				this.listCatchData = {};
+				this.load = {};
+				this.getList(this.activeIndex);
+			}
+		});
+	},
+	methods: {
+		// 加载更多
+		loadmore() {
+			if (this.load[this.activeIndex].loading === 'noMore') return;
+			this.load[this.activeIndex].page++;
+			this.getList(this.activeIndex);
 		},
-		onLoad() {
-		
-		},
-		watch: {
-			tab(newVal) {
-				if (newVal.length === 0) return
-				this.listCatchData = {}
-				this.load = {}
-				this.getList(this.activeIndex)
+
+		change(e) {
+			const { current } = e.detail;
+			this.$emit('change', current);
+			// TODO 当数据不存在 或者 长度是 0 的情况下，才去请求数据
+			if (!this.listCatchData[current] || this.listCatchData[current].length === 0) {
+				this.getList(current);
 			}
 		},
-		// onLoad 在页面 ，created 组件
-		created() {
-			// TODO tab 还没有赋值
-			// this.getList(0)
-			uni.$on('update_article', res => {
-				this.listCatchData = {}
-				this.load = {}
-				this.getList(this.activeIndex)
-			})
-		},
-		methods: {
-			// 加载更多
-			loadmore() {
-				if (this.load[this.activeIndex].loading === 'noMore') return
-				this.load[this.activeIndex].page++
-				this.getList(this.activeIndex)
-			},
 
-			change(e) {
-				const {
-					current
-				} = e.detail
-				this.$emit('change', current)
-				// TODO 当数据不存在 或者 长度是 0 的情况下，才去请求数据
-				if (!this.listCatchData[current] || this.listCatchData[current].length === 0) {
-					this.getList(current)
-				}
-
-			},
-			
-			// 获取当前tab的文章列表
-			getList(current) {
-				// 初始化各tab的页数和状态
-				if (!this.load[current]) {
-					this.load[current] = {
-						page: 1,
-						loading: 'loading'
-					}
-				}
-				console.log('当前的页数', this.load[current].page);
-				this.$api.get_list({
+		// 获取当前tab的文章列表
+		getList(current) {
+			// 初始化各tab的页数和状态
+			if (!this.load[current]) {
+				this.load[current] = {
+					page: 1,
+					loading: 'loading'
+				};
+			}
+			console.log('当前的页数', this.load[current].page);
+			this.$api
+				.get_list({
 					name: this.tab[current].name,
 					page: this.load[current].page,
 					pageSize: this.pageSize
-				}).then(res => {
+				})
+				.then(res => {
 					console.log(res);
-					const {
-						data
-					} = res
+					const { data } = res;
 					// 如果没有数据了，修改状态之后不再请求
 					if (data.length === 0) {
-						let oldLoad = {}
-						oldLoad.loading = 'noMore'
-						oldLoad.page = this.load[current].page
-						this.$set(this.load, current, oldLoad)
+						let oldLoad = {};
+						oldLoad.loading = 'noMore';
+						oldLoad.page = this.load[current].page;
+						this.$set(this.load, current, oldLoad);
 						// 强制渲染页面
-						this.$forceUpdate()
-						return
+						this.$forceUpdate();
+						return;
 					}
-					let oldList = this.listCatchData[current] || []
-					oldList.push(...data)
+					let oldList = this.listCatchData[current] || [];
+					oldList.push(...data);
 					// 懒加载
-					this.$set(this.listCatchData, current, oldList)
-				})
-			}
+					this.$set(this.listCatchData, current, oldList);
+				});
 		}
 	}
+};
 </script>
 
 <style lang="scss">
-	.home-swiper {
+.home-swiper {
+	height: 100%;
+
+	.swiper-item {
 		height: 100%;
+		overflow: hidden;
 
-		.swiper-item {
-			height: 100%;
-			overflow: hidden;
-
-			.list-scroll {
-				height: 100%;
-			}
-		}
+		// .list-scroll {
+		// 	height: 100%;
+		// }
 	}
+}
 </style>

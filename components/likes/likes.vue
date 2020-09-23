@@ -12,6 +12,10 @@
 				default () {
 					return {}
 				}
+			},
+			types:{
+				type:String,
+				default:''
 			}
 		},
 		data() {
@@ -29,9 +33,7 @@
 		},
 		methods: {
 			likeTap() {
-				this.like = !this.like
 				this.setUpdateLikes()
-				console.log('收藏成功');
 			},
 			
 			// 收藏文章
@@ -40,12 +42,15 @@
 				this.$api.update_like({
 					article_id: this.item._id
 				}).then(res => {
+					this.like = !this.like
 					uni.hideLoading()
 					uni.showToast({
 						title:this.like?'收藏成功':'取消收藏',
 						icon:'none'
 					})
-					console.log(res);
+					
+					// 如果types==='follow' 更新主页数据
+					uni.$emit('update_article',this.types)
 					
 				}).catch(()=>{
 					uni.hideLoading()

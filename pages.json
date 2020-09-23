@@ -38,6 +38,10 @@
             "path" : "pages/detail-comments/detail-comments",
             "style" : {}
         }
+        ,{
+            "path" : "components/list-author/list-author",
+            "style" : {}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
