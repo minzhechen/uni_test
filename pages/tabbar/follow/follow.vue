@@ -8,6 +8,8 @@
 		</view>
 
 		<view class="follow-content">
+			<uni-load-more v-if="list.length === 0 && !articleShow" :status="loading" iconType="snow"></uni-load-more>
+			<view v-if="articleShow" class="no-data">没有数据</view>
 			<swiper class="follow-content_swiper" :current="activeIndex" @change="change">
 				<swiper-item>
 					<view class="swiper-item">
@@ -16,12 +18,11 @@
 				</swiper-item>
 				<swiper-item>
 					<view class="swiper-item">
-						<list-author></list-author>
+						<list-author v-for="v in listAuthor" :key="v.id" :item="v"></list-author>
 					</view>
 					</swiper-item>
 			</swiper>
-			<uni-load-more v-if="list.length === 0 && !articleShow" :status="loading" iconType="snow"></uni-load-more>
-			<view v-if="articleShow" class="no-data">没有数据</view>
+			
 		</view>
 	</view>
 </template>
@@ -33,17 +34,23 @@ export default {
 			// tab切换
 			activeIndex: 0,
 			list: [],
+			// 关注作者的列表
+			listAuthor:[],
 			// 加载状态
 			loading: 'loading',
-			articleShow: false
+			articleShow: false,
 		};
 	},
 	onLoad() {
 		// 初始化页面数据
 		this.getList();
+		this.getAuthor()
 		// 更新页面
 		uni.$on('update_article', res => {
 			this.getList();
+		});
+		uni.$on('update_author', res => {
+			this.getAuthor();
 		});
 	},
 	methods: {
@@ -55,7 +62,7 @@ export default {
 		change(e){
 			this.activeIndex = e.target.current
 		},
-		// 获取列表
+		// 获取收藏文章列表
 		getList() {
 			// console.log(333332);
 			this.$api.get_follow().then(res => {
@@ -65,6 +72,13 @@ export default {
 				}
 				console.log(this.list);
 			});
+		},
+		// 获取关注作者列表
+		getAuthor(){
+			this.$api.get_author().then(res=>{
+				this.listAuthor = res.data
+				console.log(this.listAuthor);
+			})
 		}
 	}
 };
