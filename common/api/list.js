@@ -84,3 +84,19 @@ export const get_author = (data) => {
 		data
 	})
 }
+
+// 获取用户信息
+export const get_user = (data) => {
+	return $http({
+		url: "get_user",
+		data
+	})
+}
+
+// 获取用户信息
+export const get_my_article = (data) => {
+	return $http({
+		url: "get_my_article",
+		data
+	})
+}
