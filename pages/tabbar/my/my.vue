@@ -33,7 +33,7 @@
 			</view>
 
 			<view class="my-content__list">
-				<view class="my-content__list-box">
+				<view class="my-content__list-box" @click="feedback">
 					<uni-icons type="help" size="14"></uni-icons>
 					<text>意见反馈</text>
 				</view>
@@ -60,6 +60,11 @@ export default {
 			uni.navigateTo({
 				url: '/pages/my-article/my-article'
 			});
+		},
+		feedback(){
+			uni.navigateTo({
+				url:'/pages/feedback/feedback'
+			})
 		}
 	}
 };

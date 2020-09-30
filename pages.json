@@ -51,7 +51,11 @@
 				"navigationBarTitleText": "我的文章"
 			}
 		}
-	],
+	    ,{
+            "path" : "pages/feedback/feedback",
+            "style" : {}
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
