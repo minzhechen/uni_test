@@ -2,8 +2,10 @@
 	<swiper class="home-swiper" :current="activeIndex" @change="change">
 		<!-- 每个标签页 -->
 		<swiper-item v-for="(item, index) in tab" :key="index" class="swiper-item">
-			<!-- 每一页的渲染数据 -->
-			<list-item :list="listCatchData[index]" :load="load[index]" @loadmore="loadmore"></list-item>
+			
+				<!-- 每一页的渲染数据 -->
+				<list-item :list="listCatchData[index]" :load="load[index]" @loadmore="loadmore"></list-item>
+			
 		</swiper-item>
 	</swiper>
 </template>
@@ -122,7 +124,7 @@ export default {
 		height: 100%;
 		overflow: hidden;
 
-		// .list-scroll {
+		// .list-item{
 		// 	height: 100%;
 		// }
 	}

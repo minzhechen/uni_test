@@ -33,29 +33,17 @@
 				"navigationBarTitleText": "详情"
 			}
 		}, {
-			"path": "components/comments-box/comments-box",
-			"style": {
-				"navigationBarTitleText": "标签管理"
-			}
-		}, {
 			"path": "pages/detail-comments/detail-comments",
 			"style": {
 				"navigationBarTitleText": "评论列表"
 			}
-		}, {
-			"path": "components/list-author/list-author",
-			"style": {}
 		}, {
 			"path": "pages/my-article/my-article",
 			"style": {
 				"navigationBarTitleText": "我的文章"
 			}
 		}
-	    ,{
-            "path" : "pages/feedback/feedback",
-            "style" : {}
-        }
-    ],
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",

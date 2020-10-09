@@ -100,3 +100,11 @@ export const get_my_article = (data) => {
 		data
 	})
 }
+
+// 新增意见反馈
+export const update_feedback = (data) => {
+	return $http({
+		url: "update_feedback",
+		data
+	})
+}
