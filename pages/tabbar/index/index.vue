@@ -10,6 +10,7 @@
 </template>
 
 <script>
+	import { mapState } from 'vuex'
 	// easyCom components/组件名/组件名.vue 局部引入
 	export default {
 		data() {
@@ -27,8 +28,19 @@
 				this.activeIndex = 0
 				this.getLabel()
 			})
-			// 获取tab标签
-			this.getLabel()
+			
+		},
+		watch:{
+			userinfo(newVal){
+				// 获取tab标签
+				this.getLabel()
+			}
+		},
+		computed:{
+			...mapState([
+			  // 映射 this.count 为 store.state.count
+			  'userinfo'
+			])
 		},
 		methods: {
 			// 统一tab列和文章列的索引
